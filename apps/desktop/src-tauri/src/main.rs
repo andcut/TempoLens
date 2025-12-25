@@ -4,12 +4,14 @@ use timelens_core::analysis::labeling::LabelConfig;
 use timelens_core::AnalysisConfig;
 
 #[tauri::command]
-async fn analyze_pgn_text(pgn: String, engine_path: String) -> Result<String, String> {
-    println!("[Tauri] Starting analysis with engine: {}", engine_path);
+async fn analyze_pgn_text(pgn: String, engine_path: String, depth: Option<u16>) -> Result<String, String> {
+    let depth = depth.unwrap_or(14);
+    println!("[Tauri] Starting analysis with engine: {}, depth: {}", engine_path, depth);
+    
     let cfg = AnalysisConfig {
         engine_path,
         multipv: 4,
-        depth: 14,
+        depth,
         movetime_ms: None,
         threads: None,
         hash_mb: None,
@@ -27,14 +29,14 @@ async fn analyze_pgn_text(pgn: String, engine_path: String) -> Result<String, St
         .await
         .map_err(|e| e.to_string())?;
 
-    println!("[Tauri] Analysis complete, {} plies processed", analysis.plies.len());
+    println!("[Tauri] Analysis complete, {} plies processed at depth {}", analysis.plies.len(), depth);
     serde_json::to_string(&analysis).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
-async fn analyze_pgn_file(path: String, engine_path: String) -> Result<String, String> {
+async fn analyze_pgn_file(path: String, engine_path: String, depth: Option<u16>) -> Result<String, String> {
     let pgn = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
-    analyze_pgn_text(pgn, engine_path).await
+    analyze_pgn_text(pgn, engine_path, depth).await
 }
 
 fn main() {

@@ -6,7 +6,11 @@ function isTauriAvailable(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
 
-export async function analyzePgnText(pgn: string, enginePath: string): Promise<GameAnalysis> {
+export async function analyzePgnText(
+  pgn: string,
+  enginePath: string,
+  depth: number = 14
+): Promise<GameAnalysis> {
   if (!isTauriAvailable()) {
     if (import.meta.env.VITE_USE_MOCK_ANALYSIS === "true") {
       console.log("[TempoLens] Tauri not available, using mock analysis");
@@ -17,11 +21,15 @@ export async function analyzePgnText(pgn: string, enginePath: string): Promise<G
   }
 
   const { invoke } = await import("@tauri-apps/api/core");
-  const raw = await invoke<string>("analyze_pgn_text", { pgn, enginePath });
+  const raw = await invoke<string>("analyze_pgn_text", { pgn, enginePath, depth });
   return normalizeAnalysisOutput(raw);
 }
 
-export async function analyzePgnFile(path: string, enginePath: string): Promise<GameAnalysis> {
+export async function analyzePgnFile(
+  path: string,
+  enginePath: string,
+  depth: number = 14
+): Promise<GameAnalysis> {
   if (!isTauriAvailable()) {
     if (import.meta.env.VITE_USE_MOCK_ANALYSIS === "true") {
       console.log("[TempoLens] Tauri not available, using mock analysis");
@@ -32,7 +40,7 @@ export async function analyzePgnFile(path: string, enginePath: string): Promise<
   }
 
   const { invoke } = await import("@tauri-apps/api/core");
-  const raw = await invoke<string>("analyze_pgn_file", { path, enginePath });
+  const raw = await invoke<string>("analyze_pgn_file", { path, enginePath, depth });
   return normalizeAnalysisOutput(raw);
 }
 
