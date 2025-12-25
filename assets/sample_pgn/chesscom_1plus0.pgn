@@ -1,0 +1,13 @@
+[Event "Chess.com Bullet"]
+[Site "https://www.chess.com/game/live/123"]
+[Date "2025.01.02"]
+[Round "-"]
+[White "White"]
+[Black "Black"]
+[Result "*"]
+[TimeControl "60+0"]
+
+1. d4 { [%clk 1:00] } d5 { [%clk 1:00] }
+2. c4 { [%clk 0:59] } e6 { [%clk 0:59] }
+3. Nc3 { [%clk 0:58] } Nf6 { [%clk 0:58] }
+*

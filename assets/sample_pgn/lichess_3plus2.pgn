@@ -1,0 +1,13 @@
+[Event "Lichess Blitz"]
+[Site "https://lichess.org/abcd"]
+[Date "2025.01.01"]
+[Round "-"]
+[White "White"]
+[Black "Black"]
+[Result "*"]
+[TimeControl "180+2"]
+
+1. e4 { [%clk 0:03:00] } e5 { [%clk 0:03:00] }
+2. Nf3 { [%clk 0:02:59] } Nc6 { [%clk 0:02:58] }
+3. Bb5 { [%clk 0:02:58] } a6 { [%clk 0:02:57] }
+*

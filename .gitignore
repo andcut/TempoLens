@@ -1,0 +1,30 @@
+# Rust
+/target
+**/target
+**/*.rs.bk
+
+# Node / React
+node_modules
+/dist
+.env*
+.DS_Store
+*.swp
+*.lock
+package-lock.json
+yarn.lock
+
+# Tauri
+src-tauri/target
+src-tauri/binaries
+src-tauri/gen/apple
+src-tauri/gen/linux
+src-tauri/gen/windows
+
+# IDEs
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

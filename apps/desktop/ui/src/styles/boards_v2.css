@@ -1,0 +1,151 @@
+/* --- BOARD V2 THEMES --- */
+
+.board-panel-v2 {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.theme-switcher {
+    display: flex;
+    background: #0d0f0f;
+    padding: 3px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+.theme-switcher button {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-family: "IBM Plex Mono", monospace;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-switcher button.active {
+    background: var(--panel-2);
+    color: var(--accent);
+}
+
+/* Board wrapper & container */
+.board-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.chess-board {
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.board-row {
+    display: flex;
+}
+
+.square {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.piece {
+    font-size: 36px;
+    line-height: 1;
+    user-select: none;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* --- WOOD THEME --- */
+.theme-wood {
+    background: linear-gradient(135deg, #3d2b1f, #5a4030);
+}
+
+.theme-wood .square.light {
+    background: #f0d9b5;
+}
+
+.theme-wood .square.dark {
+    background: #b58863;
+}
+
+.theme-wood .white-piece {
+    color: #fff;
+    text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+.theme-wood .black-piece {
+    color: #000;
+}
+
+/* --- MIDNIGHT THEME --- */
+.theme-midnight {
+    background: linear-gradient(135deg, #0a0f14, #1a2530);
+}
+
+.theme-midnight .square.light {
+    background: rgba(60, 80, 100, 0.5);
+}
+
+.theme-midnight .square.dark {
+    background: rgba(20, 30, 40, 0.8);
+}
+
+.theme-midnight .white-piece {
+    color: #00c2a8;
+    text-shadow: 0 0 10px rgba(0, 194, 168, 0.5);
+}
+
+.theme-midnight .black-piece {
+    color: #c0c0c0;
+    text-shadow: 0 0 5px rgba(192, 192, 192, 0.3);
+}
+
+/* --- MARBLE THEME --- */
+.theme-marble {
+    background: linear-gradient(135deg, #ddd, #f5f5f5);
+}
+
+.theme-marble .square.light {
+    background: #ffffff;
+}
+
+.theme-marble .square.dark {
+    background: #c8c8c8;
+}
+
+.theme-marble .white-piece {
+    color: #333;
+}
+
+.theme-marble .black-piece {
+    color: #111;
+}
+
+.board-fen {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    word-break: break-all;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px;
+    border-radius: 8px;
+}
