@@ -6,3 +6,4 @@ pub mod pgn;
 pub mod utils;
 
 pub use analysis::pipeline::{analyze_pgn, AnalysisConfig};
+pub use analysis::pipeline::analyze_pgns;

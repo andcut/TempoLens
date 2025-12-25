@@ -3,31 +3,46 @@ import { MOCK_OPERA_HOUSE_ANALYSIS } from "./mockData";
 
 // Check if we're running inside Tauri
 function isTauriAvailable(): boolean {
-  return typeof window !== "undefined" && "__TAURI_IPC__" in window;
+  return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
 
 export async function analyzePgnText(pgn: string, enginePath: string): Promise<GameAnalysis> {
   if (!isTauriAvailable()) {
-    console.log("[TempoLens] Tauri not available, using mock Opera House Game analysis");
-    // Simulate a short delay like a real analysis would have
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return MOCK_OPERA_HOUSE_ANALYSIS;
+    if (import.meta.env.VITE_USE_MOCK_ANALYSIS === "true") {
+      console.log("[TempoLens] Tauri not available, using mock analysis");
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      return MOCK_OPERA_HOUSE_ANALYSIS;
+    }
+    throw new Error("Tauri is not available. Run the desktop app to analyze PGNs.");
   }
 
-  const { invoke } = await import("@tauri-apps/api/tauri");
+  const { invoke } = await import("@tauri-apps/api/core");
   const raw = await invoke<string>("analyze_pgn_text", { pgn, enginePath });
-  return JSON.parse(raw);
+  return normalizeAnalysisOutput(raw);
 }
 
 export async function analyzePgnFile(path: string, enginePath: string): Promise<GameAnalysis> {
   if (!isTauriAvailable()) {
-    console.log("[TempoLens] Tauri not available, using mock Opera House Game analysis");
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return MOCK_OPERA_HOUSE_ANALYSIS;
+    if (import.meta.env.VITE_USE_MOCK_ANALYSIS === "true") {
+      console.log("[TempoLens] Tauri not available, using mock analysis");
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      return MOCK_OPERA_HOUSE_ANALYSIS;
+    }
+    throw new Error("Tauri is not available. Run the desktop app to analyze PGNs.");
   }
 
-  const { invoke } = await import("@tauri-apps/api/tauri");
+  const { invoke } = await import("@tauri-apps/api/core");
   const raw = await invoke<string>("analyze_pgn_file", { path, enginePath });
-  return JSON.parse(raw);
+  return normalizeAnalysisOutput(raw);
 }
 
+function normalizeAnalysisOutput(raw: string): GameAnalysis {
+  const parsed = JSON.parse(raw) as GameAnalysis | GameAnalysis[];
+  if (Array.isArray(parsed)) {
+    if (parsed.length === 0) {
+      throw new Error("Analysis returned no games.");
+    }
+    return parsed[0];
+  }
+  return parsed;
+}

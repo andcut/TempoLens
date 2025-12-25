@@ -1,27 +1,21 @@
 {
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "TempoLens",
+  "version": "0.1.0",
+  "identifier": "com.tempolens.dev",
   "build": {
-    "beforeBuildCommand": "npm run build",
-    "beforeDevCommand": "npm run dev",
-    "devPath": "http://localhost:5173",
-    "distDir": "../ui/dist"
-  },
-  "package": {
-    "productName": "TempoLens",
-    "version": "0.1.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      }
+    "beforeBuildCommand": {
+      "script": "npm run build",
+      "cwd": "../ui"
     },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.tempolens.dev"
+    "beforeDevCommand": {
+      "script": "npm run dev",
+      "cwd": "../ui"
     },
+    "frontendDist": "../ui/dist",
+    "devUrl": "http://localhost:5173"
+  },
+  "app": {
     "windows": [
       {
         "title": "TempoLens",
@@ -34,5 +28,9 @@
     "security": {
       "csp": null
     }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all"
   }
 }

@@ -20,13 +20,26 @@ pub struct RawPly {
 }
 
 pub fn parse_single_game(pgn: &str) -> Result<ParsedGame> {
-    let mut reader = BufferedReader::new_cursor(pgn.as_bytes());
-    let mut visitor = GameVisitor::default();
-
-    match reader.read_game(&mut visitor)? {
-        Some(game) => Ok(game),
-        None => Err(anyhow!("No PGN game found in input")),
+    let mut games = parse_games(pgn)?;
+    if games.is_empty() {
+        return Err(anyhow!("No PGN game found in input"));
     }
+    Ok(games.remove(0))
+}
+
+pub fn parse_games(pgn: &str) -> Result<Vec<ParsedGame>> {
+    let mut reader = BufferedReader::new_cursor(pgn.as_bytes());
+    let mut games = Vec::new();
+
+    loop {
+        let mut visitor = GameVisitor::default();
+        match reader.read_game(&mut visitor)? {
+            Some(game) => games.push(game),
+            None => break,
+        }
+    }
+
+    Ok(games)
 }
 
 #[derive(Default)]
@@ -91,7 +104,7 @@ pub fn detect_platform(headers: &HashMap<String, String>) -> SourcePlatform {
 
 pub fn parse_clk_comment_secs(comment: &str) -> Option<f32> {
     static RE: Lazy<Regex> = Lazy::new(|| {
-        Regex::new(r"\[%clk\s+([0-9]+):([0-9]{2})(?::([0-9]{2}))?\]").unwrap()
+        Regex::new(r"\[%clk\s*([0-9]+):([0-9]{2})(?::([0-9]{2}))?\]").unwrap()
     });
 
     let caps = RE.captures(comment)?;
@@ -119,7 +132,7 @@ pub fn parse_time_control_value(tc: &str) -> Option<TimeControl> {
     }
     let mut parts = tc.split('+');
     let base = parts.next()?.parse::<u32>().ok()?;
-    let inc = parts.next()?.parse::<u32>().ok()?;
+    let inc = parts.next().and_then(|v| v.parse::<u32>().ok()).unwrap_or(0);
     Some(TimeControl {
         base_secs: base,
         increment_secs: inc,

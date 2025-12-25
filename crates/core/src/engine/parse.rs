@@ -120,6 +120,8 @@ impl UciInfoAccumulator {
             best_cp_white: None,
             punish_cp_mover: None,
             spread_k_cp_mover: None,
+            gap_12_cp_mover: None,
+            complexity_cp_mover: None,
         }
     }
 }

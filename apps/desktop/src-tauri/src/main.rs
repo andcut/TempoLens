@@ -5,6 +5,7 @@ use timelens_core::AnalysisConfig;
 
 #[tauri::command]
 async fn analyze_pgn_text(pgn: String, engine_path: String) -> Result<String, String> {
+    println!("[Tauri] Starting analysis with engine: {}", engine_path);
     let cfg = AnalysisConfig {
         engine_path,
         multipv: 4,
@@ -15,6 +16,9 @@ async fn analyze_pgn_text(pgn: String, engine_path: String) -> Result<String, St
         fallback_time_control: None,
         alpha: 2.0,
         beta: 10.0,
+        time_pressure_pivot: 30.0,
+        time_pressure_scale: 8.0,
+        time_pressure_boost: 3.0,
         k_sigmoid: 1.2,
         label_config: LabelConfig::default(),
     };
@@ -23,6 +27,7 @@ async fn analyze_pgn_text(pgn: String, engine_path: String) -> Result<String, St
         .await
         .map_err(|e| e.to_string())?;
 
+    println!("[Tauri] Analysis complete, {} plies processed", analysis.plies.len());
     serde_json::to_string(&analysis).map_err(|e| e.to_string())
 }
 

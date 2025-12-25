@@ -80,6 +80,16 @@ body {
   font-size: 0.9rem;
 }
 
+.depth-badge {
+  background: rgba(0, 194, 168, 0.15);
+  color: var(--accent-2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -273,29 +283,41 @@ textarea {
   border-radius: 4px;
 }
 
-.minimal-board .square.light { background: #e6e1d8; }
-.minimal-board .square.dark { background: #9b9487; }
+.minimal-board .square.light {
+  background: #e6e1d8;
+}
+
+.minimal-board .square.dark {
+  background: #9b9487;
+}
 
 .minimal-board .piece {
   font-size: 32px;
   line-height: 1;
   user-select: none;
 }
-.minimal-board .piece.w { color: #222; }
-.minimal-board .piece.b { color: #000; }
+
+.minimal-board .piece.w {
+  color: #222;
+}
+
+.minimal-board .piece.b {
+  color: #000;
+}
 
 /* 2. Luxury Board */
 .luxury-board {
   width: 400px;
   height: 400px;
   background-size: cover;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 100px rgba(0,0,0,0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 100px rgba(0, 0, 0, 0.5);
   border: 8px solid #1a1a1a;
   border-radius: 2px;
 }
 
 .luxury-board .square {
-  width: 48px; /* Slightly adjusted to fit the pixel-perfect texture if needed */
+  width: 48px;
+  /* Slightly adjusted to fit the pixel-perfect texture if needed */
   height: 48px;
 }
 
@@ -317,7 +339,7 @@ textarea {
   gap: 2px;
   display: grid;
   padding: 4px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
   border-radius: 12px;
   box-shadow: 0 0 40px rgba(0, 194, 168, 0.1);
 }
@@ -329,8 +351,13 @@ textarea {
   transition: all 0.3s ease;
 }
 
-.glass-board .square.light { background: rgba(255, 255, 255, 0.03); }
-.glass-board .square.dark { background: rgba(0, 0, 0, 0.15); }
+.glass-board .square.light {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.glass-board .square.dark {
+  background: rgba(0, 0, 0, 0.15);
+}
 
 .glass-board .square:hover {
   background: rgba(0, 194, 168, 0.1);
@@ -344,8 +371,14 @@ textarea {
   text-shadow: 0 0 8px currentColor;
 }
 
-.glass-piece.w { color: var(--accent-2); }
-.glass-piece.b { color: #fff; opacity: 0.8; }
+.glass-piece.w {
+  color: var(--accent-2);
+}
+
+.glass-piece.b {
+  color: #fff;
+  opacity: 0.8;
+}
 
 .board-info {
   margin-top: auto;
@@ -356,7 +389,7 @@ textarea {
   font-size: 0.7rem;
   color: var(--muted);
   word-break: break-all;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
   padding: 8px;
   border-radius: 8px;
 }
@@ -370,13 +403,42 @@ textarea {
 }
 
 .sparkline span {
-  width: 6px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), var(--accent));
-  border-radius: 6px 6px 2px 2px;
+  width: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), var(--accent));
+  border-radius: 2px;
+  transition: opacity 0.2s ease;
+}
+
+.sparkline span:hover {
+  opacity: 0.8;
 }
 
 .sparkline.score span {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), var(--accent-2));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), var(--accent-2));
+}
+
+.graph-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.graph-with-axis {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.axis-y {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  padding: 4px 0;
+  text-align: right;
+  min-width: 24px;
 }
 
 .detail-header {
@@ -415,6 +477,14 @@ textarea {
 
 .detail-grid strong {
   font-size: 1.1rem;
+}
+
+.sub-detail {
+  display: block;
+  font-size: 0.65rem !important;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  margin-top: 2px;
 }
 
 .tips {

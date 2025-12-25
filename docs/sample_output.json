@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "white": "White",
+    "black": "Black",
+    "result": "*",
+    "platform": "Lichess"
+  },
+  "plies": [
+    {
+      "ply": {
+        "ply_index": 1,
+        "san": "e4",
+        "uci": "e2e4",
+        "mover": "White",
+        "fen_before": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "fen_after": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+        "clock_after_secs": 180.0,
+        "clock_before_secs": 180.0,
+        "think_time_secs": 0.0
+      },
+      "engine_before": {
+        "depth": 14,
+        "nodes": 0,
+        "nps": 0,
+        "lines": [
+          { "multipv": 1, "uci": "e2e4", "cp_white": 18, "mate": null }
+        ],
+        "played_cp_white": 18,
+        "best_cp_white": 18,
+        "punish_cp_mover": 0,
+        "spread_k_cp_mover": 0,
+        "gap_12_cp_mover": null,
+        "complexity_cp_mover": 0
+      },
+      "metrics": {
+        "tau_white_cp": 0,
+        "cp_eval_before": 18,
+        "cp_eval_after": 18,
+        "cp_practical_before": 18,
+        "cp_practical_after": 18,
+        "p_eval_before": 0.55,
+        "p_eval_after": 0.55,
+        "p_practical_before": 0.55,
+        "p_practical_after": 0.55,
+        "dp_eval_mover": 0.0,
+        "dp_practical_mover": 0.0
+      },
+      "label": {
+        "kind": "Neutral",
+        "severity": 0.3,
+        "title": "Neutral",
+        "explanation": "Spent 0.0s, 180.0s remaining, complexity ~0cp, practical Δp=0.000",
+        "tips": ["In blitz, spend time where the position is knife-edge; play instantly where it's not."]
+      }
+    }
+  ],
+  "summary": {
+    "total_plies": 1,
+    "labels_count": { "Neutral": 1 },
+    "avg_think_time_secs": 0.0,
+    "avg_punish_cp_mover": 0.0,
+    "avg_dp_practical_mover": 0.0,
+    "avg_complexity_cp_mover": 0.0,
+    "time_trouble_moves": 0,
+    "panic_moves": 0,
+    "blunders_in_time_trouble": 0,
+    "time_trouble_rate": 0.0,
+    "panic_rate": 0.0,
+    "time_trouble_rate_known": 0.0,
+    "panic_rate_known": 0.0,
+    "phase_time_share": { "opening": 1.0, "middlegame": 0.0, "endgame": 0.0 },
+    "phase_time_share_delta_vs_15_70_15": { "opening": 0.85, "middlegame": -0.70, "endgame": -0.15 },
+    "phase_avg_think_time_secs": { "opening": 0.0, "middlegame": null, "endgame": null },
+    "phase_avg_complexity_cp_mover": { "opening": 0.0, "middlegame": null, "endgame": null }
+  }
+}

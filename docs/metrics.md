@@ -6,7 +6,8 @@
 
 ## Time equity
 - `v(T_total) = alpha / (T_total + beta)`
-- `tau_white_pawns = v(T_total) * (t_white - t_black) * phase_multiplier`
+- `pressure(T_total) = 1 + boost * (1 - sigmoid((T_total - pivot) / scale))`
+- `tau_white_pawns = v(T_total) * pressure(T_total) * (t_white - t_black) * phase_multiplier`
 - `tau_white_cp = 100 * tau_white_pawns`
 
 ## Practical evaluation
@@ -20,3 +21,4 @@ Rule-based labels are derived from:
 - think time
 - complexity proxy (spread + punish)
 - practical delta
+- time trouble thresholds (defaults: 10s trouble, 5s panic)

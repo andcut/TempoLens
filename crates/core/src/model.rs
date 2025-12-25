@@ -67,6 +67,8 @@ pub struct EngineSummary {
     pub best_cp_white: Option<i32>,
     pub punish_cp_mover: Option<i32>,
     pub spread_k_cp_mover: Option<i32>,
+    pub gap_12_cp_mover: Option<i32>,
+    pub complexity_cp_mover: Option<i32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -93,7 +95,9 @@ pub enum LabelKind {
     WastedThink,
     GoodInvestment,
     SnapBlunder,
+    PanicBlunder,
     TimeBlunder,
+    TimeTrouble,
     Neutral,
 }
 

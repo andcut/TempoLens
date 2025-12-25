@@ -26,16 +26,19 @@ export function MoveDetailPanel({ ply }: Props) {
         <p>{ply.label.explanation}</p>
         <div className="detail-grid">
           <div>
-            <span>Eval Δ</span>
-            <strong>{ply.metrics.dp_eval_mover.toFixed(3)}</strong>
+            <span>Eval</span>
+            <strong>{(ply.metrics.cp_eval_after / 100).toFixed(2)}</strong>
+            <span className="sub-detail">Δ {ply.metrics.dp_eval_mover > 0 ? "+" : ""}{(ply.metrics.dp_eval_mover * 100).toFixed(1)}%</span>
           </div>
           <div>
-            <span>Practical Δ</span>
-            <strong>{ply.metrics.dp_practical_mover.toFixed(3)}</strong>
+            <span>Practical Prob</span>
+            <strong>{(ply.metrics.p_practical_after * 100).toFixed(1)}%</strong>
+            <span className="sub-detail">Δ {ply.metrics.dp_practical_mover > 0 ? "+" : ""}{(ply.metrics.dp_practical_mover * 100).toFixed(1)}%</span>
           </div>
           <div>
-            <span>Think time</span>
+            <span>Think Time</span>
             <strong>{(ply.ply.think_time_secs ?? 0).toFixed(1)}s</strong>
+            <span className="sub-detail">Rem: {(ply.ply.clock_after_secs ?? 0).toFixed(0)}s</span>
           </div>
         </div>
         <div className="tips">

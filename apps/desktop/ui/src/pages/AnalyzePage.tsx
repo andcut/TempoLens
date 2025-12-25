@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { analyzePgnText } from "../api";
 import { BoardViewV2 } from "../components/BoardViewV2";
 import { ClockGraph } from "../components/ClockGraph";
@@ -42,6 +42,19 @@ export function AnalyzePage() {
     }
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!analysis) return;
+      if (e.key === "ArrowRight") {
+        setSelectedIndex((prev) => Math.min(prev + 1, analysis.plies.length - 1));
+      } else if (e.key === "ArrowLeft") {
+        setSelectedIndex((prev) => Math.max(prev - 1, 0));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [analysis]);
+
   return (
     <div className="app">
       <header className="hero">
@@ -56,7 +69,13 @@ export function AnalyzePage() {
         <div className="hero-card">
           <div className="hero-title">{header}</div>
           <div className="hero-meta">
-            {analysis ? `Moves analyzed: ${analysis.plies.length}` : "Paste a PGN to begin"}
+            {analysis ? (
+              <>
+                Moves analyzed: {analysis.plies.length} · <span className="depth-badge">Depth 14</span>
+              </>
+            ) : (
+              "Paste a PGN to begin"
+            )}
           </div>
         </div>
       </header>
