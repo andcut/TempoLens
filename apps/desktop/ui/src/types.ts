@@ -93,6 +93,8 @@ export interface GameSummary {
   blunders_in_time_trouble: number;
   time_trouble_rate?: number | null;
   panic_rate?: number | null;
+  time_trouble_rate_known?: number | null;
+  panic_rate_known?: number | null;
   phase_time_share: {
     opening: number;
     middlegame: number;
@@ -104,6 +106,11 @@ export interface GameSummary {
     endgame: number;
   };
   phase_avg_think_time_secs: {
+    opening?: number | null;
+    middlegame?: number | null;
+    endgame?: number | null;
+  };
+  phase_avg_complexity_cp_mover: {
     opening?: number | null;
     middlegame?: number | null;
     endgame?: number | null;

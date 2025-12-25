@@ -104,13 +104,21 @@ pub fn detect_platform(headers: &HashMap<String, String>) -> SourcePlatform {
 
 pub fn parse_clk_comment_secs(comment: &str) -> Option<f32> {
     static RE: Lazy<Regex> = Lazy::new(|| {
-        Regex::new(r"\[%clk\s*([0-9]+):([0-9]{2})(?::([0-9]{2}))?\]").unwrap()
+        Regex::new(r"\[%clk\s*([0-9]+):([0-9]{1,2})(?::([0-9]{1,2}))?\]").unwrap()
     });
 
     let caps = RE.captures(comment)?;
     let a: u32 = caps.get(1)?.as_str().parse().ok()?;
     let b: u32 = caps.get(2)?.as_str().parse().ok()?;
     let c_opt = caps.get(3).map(|m| m.as_str().parse::<u32>().ok()).flatten();
+    if b > 59 {
+        return None;
+    }
+    if let Some(c) = c_opt {
+        if c > 59 {
+            return None;
+        }
+    }
 
     let secs = if let Some(c) = c_opt {
         (a * 3600 + b * 60 + c) as f32

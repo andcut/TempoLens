@@ -122,5 +122,47 @@ pub struct PlyAnalysis {
 pub struct GameAnalysis {
     pub meta: GameMeta,
     pub plies: Vec<PlyAnalysis>,
-    pub summary: serde_json::Value,
+    pub summary: GameSummary,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PhaseTimeShare {
+    pub opening: f32,
+    pub middlegame: f32,
+    pub endgame: f32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PhaseTimeShareDelta {
+    pub opening: f32,
+    pub middlegame: f32,
+    pub endgame: f32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PhaseAverages {
+    pub opening: Option<f32>,
+    pub middlegame: Option<f32>,
+    pub endgame: Option<f32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GameSummary {
+    pub total_plies: usize,
+    pub labels_count: HashMap<String, u32>,
+    pub avg_think_time_secs: Option<f32>,
+    pub avg_punish_cp_mover: Option<f32>,
+    pub avg_dp_practical_mover: Option<f32>,
+    pub avg_complexity_cp_mover: Option<f32>,
+    pub time_trouble_moves: u32,
+    pub panic_moves: u32,
+    pub blunders_in_time_trouble: u32,
+    pub time_trouble_rate: Option<f32>,
+    pub panic_rate: Option<f32>,
+    pub time_trouble_rate_known: Option<f32>,
+    pub panic_rate_known: Option<f32>,
+    pub phase_time_share: PhaseTimeShare,
+    pub phase_time_share_delta_vs_15_70_15: PhaseTimeShareDelta,
+    pub phase_avg_think_time_secs: PhaseAverages,
+    pub phase_avg_complexity_cp_mover: PhaseAverages,
 }

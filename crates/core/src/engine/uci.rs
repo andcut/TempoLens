@@ -94,6 +94,11 @@ impl UciEngine {
         Ok(acc.into_summary())
     }
 
+    pub async fn shutdown(mut self) -> Result<(), EngineError> {
+        let _ = self.send("quit").await;
+        Ok(())
+    }
+
     async fn send(&mut self, s: &str) -> Result<(), EngineError> {
         self.stdin.write_all(s.as_bytes()).await?;
         self.stdin.write_all(b"\n").await?;
@@ -132,5 +137,11 @@ impl UciEngine {
         Ok(timeout(dur, fut)
             .await
             .map_err(|_| EngineError::Timeout)??)
+    }
+}
+
+impl Drop for UciEngine {
+    fn drop(&mut self) {
+        let _ = self._child.start_kill();
     }
 }
