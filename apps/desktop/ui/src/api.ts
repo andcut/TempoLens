@@ -1,4 +1,4 @@
-import type { GameAnalysis } from "./types";
+import type { AnalysisOptions, GameAnalysis } from "./types";
 import { MOCK_OPERA_HOUSE_ANALYSIS } from "./mockData";
 
 // Check if we're running inside Tauri
@@ -9,7 +9,7 @@ function isTauriAvailable(): boolean {
 export async function analyzePgnText(
   pgn: string,
   enginePath: string,
-  depth: number = 14
+  options: AnalysisOptions
 ): Promise<GameAnalysis> {
   if (!isTauriAvailable()) {
     if (import.meta.env.VITE_USE_MOCK_ANALYSIS === "true") {
@@ -21,14 +21,14 @@ export async function analyzePgnText(
   }
 
   const { invoke } = await import("@tauri-apps/api/core");
-  const raw = await invoke<string>("analyze_pgn_text", { pgn, enginePath, depth });
+  const raw = await invoke<string>("analyze_pgn_text", { pgn, enginePath, options });
   return normalizeAnalysisOutput(raw);
 }
 
 export async function analyzePgnFile(
   path: string,
   enginePath: string,
-  depth: number = 14
+  options: AnalysisOptions
 ): Promise<GameAnalysis> {
   if (!isTauriAvailable()) {
     if (import.meta.env.VITE_USE_MOCK_ANALYSIS === "true") {
@@ -40,7 +40,7 @@ export async function analyzePgnFile(
   }
 
   const { invoke } = await import("@tauri-apps/api/core");
-  const raw = await invoke<string>("analyze_pgn_file", { path, enginePath, depth });
+  const raw = await invoke<string>("analyze_pgn_file", { path, enginePath, options });
   return normalizeAnalysisOutput(raw);
 }
 

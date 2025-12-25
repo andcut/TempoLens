@@ -39,3 +39,10 @@ Rationale: reduces startup overhead in batch analysis.
 - Otherwise it errors if Tauri IPC is unavailable.
 
 Rationale: avoids silently analyzing the sample Opera House game.
+
+## Desktop settings persistence
+
+- Desktop settings and recent PGNs are stored in `localStorage`.
+- Advanced analysis settings live in the Settings panel.
+
+Rationale: keeps the desktop app self-contained without introducing a database.

@@ -3,10 +3,8 @@ import React, { useState } from "react";
 interface Props {
   pgn: string;
   enginePath: string;
-  depth: number;
   onChangePgn: (value: string) => void;
   onChangeEnginePath: (value: string) => void;
-  onChangeDepth: (value: number) => void;
   onAnalyze: () => void;
   isBusy: boolean;
 }
@@ -14,10 +12,8 @@ interface Props {
 export function GameLoader({
   pgn,
   enginePath,
-  depth,
   onChangePgn,
   onChangeEnginePath,
-  onChangeDepth,
   onAnalyze,
   isBusy
 }: Props) {
@@ -96,16 +92,6 @@ export function GameLoader({
             value={enginePath}
             onChange={(e) => onChangeEnginePath(e.target.value)}
             placeholder="/opt/homebrew/bin/stockfish"
-          />
-        </label>
-        <label className="field field-small">
-          <span>Depth</span>
-          <input
-            type="number"
-            min={8}
-            max={24}
-            value={depth}
-            onChange={(e) => onChangeDepth(parseInt(e.target.value, 10) || 14)}
           />
         </label>
       </div>

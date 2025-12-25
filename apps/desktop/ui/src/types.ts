@@ -122,3 +122,25 @@ export interface GameAnalysis {
   plies: PlyAnalysis[];
   summary: GameSummary;
 }
+
+export interface AnalysisOptions {
+  depth: number;
+  multipv: number;
+  movetime_ms?: number | null;
+  threads?: number | null;
+  hash_mb?: number | null;
+  time_control?: string | null;
+  alpha: number;
+  beta: number;
+  time_pressure_pivot: number;
+  time_pressure_scale: number;
+  time_pressure_boost: number;
+  k_sigmoid: number;
+}
+
+export interface RecentPgnEntry {
+  id: string;
+  label: string;
+  savedAt: number;
+  pgn: string;
+}

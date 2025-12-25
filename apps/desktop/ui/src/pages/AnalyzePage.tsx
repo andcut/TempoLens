@@ -1,25 +1,46 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { analyzePgnText } from "../api";
+import { AboutModal } from "../components/AboutModal";
 import { BoardViewV2 } from "../components/BoardViewV2";
 import { ClockGraph } from "../components/ClockGraph";
 import { GameLoader } from "../components/GameLoader";
 import { MoveDetailPanel } from "../components/MoveDetailPanel";
 import { MoveList } from "../components/MoveList";
 import { PracticalScoreGraph } from "../components/PracticalScoreGraph";
+import { RecentGamesPanel } from "../components/RecentGamesPanel";
+import { SettingsPanel } from "../components/SettingsPanel";
 import { SummaryPanel } from "../components/SummaryPanel";
 import { OPERA_HOUSE_PGN } from "../mockData";
-import type { GameAnalysis } from "../types";
+import type { AnalysisOptions, GameAnalysis, RecentPgnEntry } from "../types";
 import { useLocalStorage } from "../utils/useLocalStorage";
+import { formatPgnLabel, parsePgnMeta } from "../utils/pgnMeta";
 
 export function AnalyzePage() {
   const [pgn, setPgn] = useState(OPERA_HOUSE_PGN);
   const [enginePath, setEnginePath] = useLocalStorage("enginePath", "/opt/homebrew/bin/stockfish");
-  const [depth, setDepth] = useLocalStorage("engineDepth", 14);
+  const [options, setOptions] = useLocalStorage<AnalysisOptions>("analysisOptions", {
+    depth: 14,
+    multipv: 4,
+    movetime_ms: null,
+    threads: null,
+    hash_mb: null,
+    time_control: null,
+    alpha: 2.0,
+    beta: 10.0,
+    time_pressure_pivot: 30.0,
+    time_pressure_scale: 8.0,
+    time_pressure_boost: 3.0,
+    k_sigmoid: 1.2
+  });
+  const [recentGames, setRecentGames] = useLocalStorage<RecentPgnEntry[]>("recentPgns", []);
   const [analysis, setAnalysis] = useState<GameAnalysis | null>(null);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [appVersion, setAppVersion] = useState<string | null>(null);
 
   const selected = analysis?.plies[selectedIndex];
 
@@ -38,14 +59,26 @@ export function AnalyzePage() {
   }, [analysis]);
 
   const onAnalyze = async () => {
+    if (!enginePath.trim()) {
+      setError("Engine path is required.");
+      return;
+    }
     setBusy(true);
     setError(null);
     setProgress("Starting analysis...");
     try {
-      const res = await analyzePgnText(pgn, enginePath, depth);
+      const res = await analyzePgnText(pgn, enginePath, options);
       setAnalysis(res);
       setSelectedIndex(0);
       setProgress(null);
+      const meta = parsePgnMeta(pgn);
+      const entry: RecentPgnEntry = {
+        id: `${Date.now()}`,
+        label: formatPgnLabel(meta),
+        savedAt: Date.now(),
+        pgn
+      };
+      setRecentGames((prev) => [entry, ...prev.filter((item) => item.pgn !== pgn)].slice(0, 6));
     } catch (err) {
       const errorStr = String(err);
       // Parse common errors into friendly messages
@@ -87,6 +120,44 @@ export function AnalyzePage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [analysis]);
 
+  useEffect(() => {
+    const handleSettingsEvent = async () => {
+      setSettingsOpen(true);
+      const el = document.querySelector(".settings-panel");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    };
+
+    const bindEvents = async () => {
+      if (typeof window === "undefined" || !("__TAURI_INTERNALS__" in window)) return;
+      const { listen } = await import("@tauri-apps/api/event");
+      const unlisten = await listen("open-settings", handleSettingsEvent);
+      const unlistenAbout = await listen("open-about", () => setAboutOpen(true));
+      return () => {
+        unlisten();
+        unlistenAbout();
+      };
+    };
+
+    const cleanup = bindEvents();
+    return () => {
+      if (cleanup instanceof Promise) {
+        cleanup.then((fn) => fn && fn());
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const loadVersion = async () => {
+      if (typeof window === "undefined" || !("__TAURI_INTERNALS__" in window)) return;
+      const { getVersion } = await import("@tauri-apps/api/app");
+      const version = await getVersion();
+      setAppVersion(version);
+    };
+    loadVersion();
+  }, []);
+
   return (
     <div className="app">
       <header className="hero">
@@ -104,7 +175,7 @@ export function AnalyzePage() {
             {analysis ? (
               <>
                 {analysis.plies.length} moves ·
-                <span className="depth-badge">Depth {analysis.plies[0]?.engine_before?.depth ?? depth}</span>
+                <span className="depth-badge">Depth {analysis.plies[0]?.engine_before?.depth ?? options.depth}</span>
                 {timeControlLabel && <span className="tc-badge">{timeControlLabel}</span>}
               </>
             ) : (
@@ -116,6 +187,9 @@ export function AnalyzePage() {
               Export JSON
             </button>
           )}
+          <button className="ghost about-btn" onClick={() => setAboutOpen(true)}>
+            About TempoLens
+          </button>
         </div>
       </header>
 
@@ -124,12 +198,43 @@ export function AnalyzePage() {
           <GameLoader
             pgn={pgn}
             enginePath={enginePath}
-            depth={depth}
             onChangePgn={setPgn}
             onChangeEnginePath={setEnginePath}
-            onChangeDepth={setDepth}
             onAnalyze={onAnalyze}
             isBusy={busy}
+          />
+          <button
+            className="ghost settings-toggle"
+            onClick={() => setSettingsOpen((prev) => !prev)}
+          >
+            {settingsOpen ? "Hide settings" : "Show settings"}
+          </button>
+          {settingsOpen && (
+            <SettingsPanel
+              options={options}
+              onChange={setOptions}
+              onReset={() =>
+                setOptions({
+                  depth: 14,
+                  multipv: 4,
+                  movetime_ms: null,
+                  threads: null,
+                  hash_mb: null,
+                  time_control: null,
+                  alpha: 2.0,
+                  beta: 10.0,
+                  time_pressure_pivot: 30.0,
+                  time_pressure_scale: 8.0,
+                  time_pressure_boost: 3.0,
+                  k_sigmoid: 1.2
+                })
+              }
+            />
+          )}
+          <RecentGamesPanel
+            entries={recentGames}
+            onLoad={(entry) => setPgn(entry.pgn)}
+            onClear={() => setRecentGames([])}
           />
           {progress && <div className="panel progress">{progress}</div>}
           {error && <div className="panel error">{error}</div>}
@@ -163,6 +268,7 @@ export function AnalyzePage() {
           {analysis?.summary && <SummaryPanel summary={analysis.summary} />}
         </div>
       </section>
+      <AboutModal open={aboutOpen} version={appVersion} onClose={() => setAboutOpen(false)} />
     </div>
   );
 }
