@@ -7,6 +7,9 @@ pub enum Color {
     Black,
 }
 
+pub const PHASE_OPENING_END_PLY: u32 = 20;
+pub const PHASE_MIDDLEGAME_END_PLY: u32 = 60;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TimeControl {
     pub base_secs: u32,

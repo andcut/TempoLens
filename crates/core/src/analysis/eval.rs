@@ -55,10 +55,8 @@ pub fn fill_engine_metrics(summary: &mut EngineSummary, mover: Color) {
 
 fn combine_complexity(values: [Option<i32>; 3]) -> Option<i32> {
     let mut best: Option<i32> = None;
-    for value in values {
-        if let Some(v) = value {
-            best = Some(best.map_or(v, |b| b.max(v)));
-        }
+    for v in values.into_iter().flatten() {
+        best = Some(best.map_or(v, |b| b.max(v)));
     }
     best
 }

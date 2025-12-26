@@ -7,7 +7,7 @@ use timelens_core::analysis::labeling::LabelConfig;
 use timelens_core::pgn::parse_time_control_value;
 use timelens_core::AnalysisConfig;
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Default)]
 struct AnalysisOptions {
     depth: Option<u16>,
     multipv: Option<u8>,
@@ -23,6 +23,37 @@ struct AnalysisOptions {
     k_sigmoid: Option<f32>,
 }
 
+impl AnalysisOptions {
+    fn to_config(&self, engine_path: String) -> Result<AnalysisConfig, String> {
+        let base = AnalysisConfig::default();
+        
+        let fallback_time_control = if let Some(tc) = &self.time_control {
+            let parsed = parse_time_control_value(tc)
+                .ok_or_else(|| format!("Invalid TimeControl '{}'. Use format like 180+2.", tc))?;
+            Some(parsed)
+        } else {
+            None
+        };
+
+        Ok(AnalysisConfig {
+            engine_path,
+            multipv: self.multipv.unwrap_or(base.multipv),
+            depth: self.depth.unwrap_or(base.depth),
+            movetime_ms: self.movetime_ms.or(base.movetime_ms),
+            threads: self.threads.or(base.threads),
+            hash_mb: self.hash_mb.or(base.hash_mb),
+            fallback_time_control,
+            alpha: self.alpha.unwrap_or(base.alpha),
+            beta: self.beta.unwrap_or(base.beta),
+            time_pressure_pivot: self.time_pressure_pivot.unwrap_or(base.time_pressure_pivot),
+            time_pressure_scale: self.time_pressure_scale.unwrap_or(base.time_pressure_scale),
+            time_pressure_boost: self.time_pressure_boost.unwrap_or(base.time_pressure_boost),
+            k_sigmoid: self.k_sigmoid.unwrap_or(base.k_sigmoid),
+            label_config: base.label_config,
+        })
+    }
+}
+
 #[tauri::command]
 async fn analyze_pgn_text(
     pgn: String,
@@ -33,45 +64,8 @@ async fn analyze_pgn_text(
         return Err("Engine path is required.".to_string());
     }
 
-    let options = options.unwrap_or(AnalysisOptions {
-        depth: None,
-        multipv: None,
-        movetime_ms: None,
-        threads: None,
-        hash_mb: None,
-        time_control: None,
-        alpha: None,
-        beta: None,
-        time_pressure_pivot: None,
-        time_pressure_scale: None,
-        time_pressure_boost: None,
-        k_sigmoid: None,
-    });
-
-    let fallback_time_control = if let Some(tc) = options.time_control.as_deref() {
-        let parsed = parse_time_control_value(tc)
-            .ok_or_else(|| format!("Invalid TimeControl '{}'. Use format like 180+2.", tc))?;
-        Some(parsed)
-    } else {
-        None
-    };
-
-    let cfg = AnalysisConfig {
-        engine_path,
-        multipv: options.multipv.unwrap_or(4),
-        depth: options.depth.unwrap_or(14),
-        movetime_ms: options.movetime_ms,
-        threads: options.threads,
-        hash_mb: options.hash_mb,
-        fallback_time_control,
-        alpha: options.alpha.unwrap_or(2.0),
-        beta: options.beta.unwrap_or(10.0),
-        time_pressure_pivot: options.time_pressure_pivot.unwrap_or(30.0),
-        time_pressure_scale: options.time_pressure_scale.unwrap_or(8.0),
-        time_pressure_boost: options.time_pressure_boost.unwrap_or(3.0),
-        k_sigmoid: options.k_sigmoid.unwrap_or(1.2),
-        label_config: LabelConfig::default(),
-    };
+    let options = options.unwrap_or_default();
+    let cfg = options.to_config(engine_path)?;
 
     let analysis = timelens_core::analysis::pipeline::analyze_pgn(&pgn, cfg)
         .await

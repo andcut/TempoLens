@@ -19,7 +19,7 @@ export function PracticalScoreGraph({ plies, onSelect, selectedIndex }: Props) {
             <span>0.0</span>
           </div>
           <div className="sparkline score clickable">
-            {plies.slice(0, 80).map((ply, idx) => {
+            {plies.map((ply, idx) => {
               const p = ply.metrics.p_practical_after ?? 0.5;
               const h = Math.max(4, p * 60);
               const isSelected = idx === selectedIndex;

@@ -134,9 +134,9 @@ impl UciEngine {
             }
             Ok(buf.trim().to_string())
         };
-        Ok(timeout(dur, fut)
+        timeout(dur, fut)
             .await
-            .map_err(|_| EngineError::Timeout)??)
+            .map_err(|_| EngineError::Timeout)?
     }
 }
 

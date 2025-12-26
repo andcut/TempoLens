@@ -1,16 +1,17 @@
-use crate::model::Color;
+use crate::model::{Color, PHASE_MIDDLEGAME_END_PLY, PHASE_OPENING_END_PLY};
 use crate::utils::sigmoid;
 
 pub fn phase_multiplier(ply_index: u32) -> f32 {
-    if ply_index < 20 {
+    if ply_index < PHASE_OPENING_END_PLY {
         0.85
-    } else if ply_index < 60 {
+    } else if ply_index < PHASE_MIDDLEGAME_END_PLY {
         1.0
     } else {
         1.15
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn time_equity_white_cp(
     alpha: f32,
     beta: f32,

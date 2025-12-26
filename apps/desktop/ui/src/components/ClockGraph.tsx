@@ -30,7 +30,7 @@ export function ClockGraph({ plies, timeControl, onSelect, selectedIndex }: Prop
             <span>0s</span>
           </div>
           <div className="sparkline clickable">
-            {plies.slice(0, 80).map((ply, idx) => {
+            {plies.map((ply, idx) => {
               const t = ply.ply.clock_after_secs ?? 0;
               const h = Math.max(4, (t / maxTime) * 60);
               const isSelected = idx === selectedIndex;

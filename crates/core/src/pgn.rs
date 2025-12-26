@@ -110,7 +110,7 @@ pub fn parse_clk_comment_secs(comment: &str) -> Option<f32> {
     let caps = RE.captures(comment)?;
     let a: u32 = caps.get(1)?.as_str().parse().ok()?;
     let b: u32 = caps.get(2)?.as_str().parse().ok()?;
-    let c_opt = caps.get(3).map(|m| m.as_str().parse::<u32>().ok()).flatten();
+    let c_opt = caps.get(3).and_then(|m| m.as_str().parse::<u32>().ok());
     if b > 59 {
         return None;
     }

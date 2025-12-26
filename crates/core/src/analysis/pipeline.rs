@@ -9,7 +9,8 @@ use crate::clocks::derive_clock_before_and_think_times;
 use crate::engine::uci::UciEngine;
 use crate::model::{
     Color, EngineSummary, GameAnalysis, GameMeta, GameSummary, MoveMetrics, PhaseAverages,
-    PhaseTimeShare, PhaseTimeShareDelta, PlyAnalysis,
+    PhaseTimeShare, PhaseTimeShareDelta, PlyAnalysis, PHASE_MIDDLEGAME_END_PLY,
+    PHASE_OPENING_END_PLY,
 };
 use crate::pgn::{detect_platform, parse_games, parse_time_control_header};
 
@@ -29,6 +30,27 @@ pub struct AnalysisConfig {
     pub time_pressure_boost: f32,
     pub k_sigmoid: f32,
     pub label_config: LabelConfig,
+}
+
+impl Default for AnalysisConfig {
+    fn default() -> Self {
+        Self {
+            engine_path: String::new(),
+            multipv: 4,
+            depth: 14,
+            movetime_ms: None,
+            threads: None,
+            hash_mb: None,
+            fallback_time_control: None,
+            alpha: 2.0,
+            beta: 10.0,
+            time_pressure_pivot: 30.0,
+            time_pressure_scale: 8.0,
+            time_pressure_boost: 3.0,
+            k_sigmoid: 1.2,
+            label_config: LabelConfig::default(),
+        }
+    }
 }
 
 pub async fn analyze_pgn(pgn: &str, cfg: AnalysisConfig) -> Result<GameAnalysis> {
@@ -547,9 +569,9 @@ struct PhaseStats {
 }
 
 fn phase_index(ply_index: u32) -> usize {
-    if ply_index < 20 {
+    if ply_index < PHASE_OPENING_END_PLY {
         0
-    } else if ply_index < 60 {
+    } else if ply_index < PHASE_MIDDLEGAME_END_PLY {
         1
     } else {
         2
