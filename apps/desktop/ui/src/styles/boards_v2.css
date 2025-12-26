@@ -43,6 +43,8 @@
 .board-wrapper {
     display: flex;
     justify-content: center;
+    align-self: center;
+    width: fit-content;
     padding: 16px;
     border-radius: 12px;
 }

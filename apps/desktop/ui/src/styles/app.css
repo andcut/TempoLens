@@ -133,7 +133,8 @@ body {
 }
 
 input,
-textarea {
+textarea,
+select {
   background: #0d0f0f;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -141,6 +142,24 @@ textarea {
   color: var(--text);
   font-family: "IBM Plex Mono", monospace;
   font-size: 0.85rem;
+}
+
+select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239b9487' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+select:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
 textarea {
@@ -397,13 +416,17 @@ textarea {
 
 .sparkline {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   align-items: flex-end;
   height: 80px;
+  overflow: hidden;
+  flex: 1;
 }
 
 .sparkline span {
-  width: 8px;
+  flex: 1;
+  min-width: 2px;
+  max-width: 12px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), var(--accent));
   border-radius: 2px;
   transition: opacity 0.2s ease;
@@ -591,7 +614,9 @@ textarea {
 }
 
 .field.field-small {
-  width: 120px;
+  flex: 1;
+  min-width: 100px;
+  max-width: 140px;
 }
 
 .field.field-small input {
@@ -607,6 +632,13 @@ textarea {
 
 .settings-panel .field-row {
   flex-wrap: wrap;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-panel .field-row:last-of-type {
+  border-bottom: none;
 }
 
 .settings-actions {

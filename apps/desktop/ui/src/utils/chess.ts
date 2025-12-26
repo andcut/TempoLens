@@ -1,5 +1,3 @@
-import React from "react";
-
 export type PieceType = "k" | "q" | "r" | "b" | "n" | "p";
 export type PieceColor = "w" | "b";
 export type SquarePiece = { type: PieceType; color: PieceColor } | null;
